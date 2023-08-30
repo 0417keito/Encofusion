@@ -101,20 +101,12 @@ def _path_exists(p):
   return p
 
 
-_examples = '''examples:
-
-  # Train deepest level JBDiff on personal music library
-  python train.py --train-data ./wavs --jb-level 2 --ckpt-save-location ./ckpts 
-
-  # Resume training middle layer of JBDiff from checkpoint
-  python train.py --train-data ./wavs --jb-level 1 --ckpt-save-location ./ckpts --resume-network-pkl ./ckpts/ckpt1.ckpt
-
-'''
+_examples = '''examples:'''
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description = 'Train JB Latent Diffusion Model on custom dataset',
+        description = 'Train Encofusion Model on custom dataset',
         epilog=_examples, 
         formatter_class=argparse.RawDescriptionHelpFormatter
         )

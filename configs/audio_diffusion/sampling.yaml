@@ -13,7 +13,7 @@ model:
               sampler_t: flat_audio_diffusion.VSampler
               embedding_features: 1536
               use_embedding_cfg: True
-              # embedding_max_length: context_mult*base_tokens
+              embedding_max_length: 64
               resnet_dilation_factor: 3
               resnet_dropout_rate: 0.05
               ckpt_loc: ./ckpts/audio_diffusion/state_dict.bin
