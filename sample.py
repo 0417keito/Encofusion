@@ -4,7 +4,7 @@ import argparse
 from omegaconf import OmegaConf
 from utils.utils import read_yaml_file, parse_diff_conf, preprocess_audio, get_base_noise, save_audio
 from utils.audio_diffusion import AudioDiffusion
-from audiocraft.models import builders
+from audiocraft.models import builders, MusicGen
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -25,20 +25,12 @@ def run(*args, **kwargs):
     num_steps = kwargs["num_steps"]
     embedding_strength = kwargs["embedding_strength"]
     
+    music_gen = MusicGen.get_pretrained()
+    compression_model = music_gen.compression_model
+    lm = music_gen.lm
     diffusion_conf = conf["model"]["diffusion"]
     diffusion_conf = parse_diff_conf(diffusion_conf)
     
-    encodec_conf = OmegaConf.load(conf["model"]["lm"]["conf_loc"])
-    encodec_ckpt = conf["model"]["encodec"]["ckpt_loc"]
-    
-    lm_conf = OmegaConf.load(conf["model"]["lm"]["conf_loc"])
-    lm_ckpt = conf["model"]["lm"]["ckpt_loc"]
-    
-    compression_model = builders.get_compressino_model(encodec_conf)
-    compression_model.load_state_dict(torch.load(encodec_ckpt)["best_state"])
-    
-    lm = builders.get_lm_model(lm_conf)
-    lm.load_state_dict(torch.load(lm_ckpt)["best_state"])
     sr = compression_model.sample_rate
     
     diffusion_model = AudioDiffusion(compression_model, lm, diffusion_kwargs=diffusion_conf,

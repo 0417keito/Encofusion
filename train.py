@@ -4,7 +4,7 @@ import argparse
 import pytorch_lightning as pl
 from omegaconf import OmegaConf
 from torch.utils.data import DataLoader
-from audiocraft.models import builders
+from audiocraft.models import builders, MusicGen
 from utils.audio_diffusion import AudioDiffusion
 from utils.utils import (read_yaml_file, parse_diff_conf, my_collate, ExceptionCallback, AudioDataset)
 
@@ -26,29 +26,18 @@ def run(*args, **kwargs):
     proj_name = kwargs['project_name']
     use_cfg = kwargs['use_cfg']
     
+    music_gen = MusicGen.get_pretrained()
+    compression_model = music_gen.compression_model
+    lm = music_gen.lm
     exc_callback = ExceptionCallback()
     ckpt_callback = pl.callbacks.ModelCheckpoint(every_n_train_steps=ckpt_every, save_top_k=-1, dirpath=save_path)
     
     diffusion_conf = conf["model"]["diffusion"]
     diffusion_conf = parse_diff_conf(diffusion_conf)
     
-    encodec_conf = OmegaConf.load(conf["model"]["encodec"]["conf_loc"]) 
-    encodec_ckpt = conf["model"]["encodec"]["ckpt_loc"]
-    
-    lm_conf = OmegaConf.load(conf["model"]["lm"]["conf_loc"])
-    lm_ckpt = conf["model"]["lm"]["ckpt_loc"]
-    
     dataset = AudioDataset(audio_data=audio_dir, text_data=text_dir, melody_data=melody_dir)
     dataloader = DataLoader(dataset, batch_size=batch_size, num_workers=num_workers, 
                             pin_memory=False, drop_last=True, collate_fn=my_collate)
-    
-    compression_model = builders.get_compression_model(encodec_conf)
-    compression_model.load_state_dict(torch.load(encodec_ckpt)['best_state'])
-    compression_model.eval()
-    
-    lm = builders.get_lm_model(lm_conf)
-    lm.load_state_dict(torch.load(lm_ckpt)['best_state'])
-    lm.eval()
     diffusion_model = AudioDiffusion(compression_model, lm, diffusion_kwargs=diffusion_conf,
                                      use_cfg=use_cfg)
     

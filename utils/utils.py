@@ -111,7 +111,6 @@ def preprocess_melody(melody_path, model:CompressionModel, duration=30):
     assert melody.shape[0] == 1
     
     melody = melody.cuda()
-    melody = melody.unsqueeze(1)
     
     return melody
 
