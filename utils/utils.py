@@ -46,12 +46,17 @@ def load_audio(audio_path, model:CompressionModel, duration:int=30):
     wav, sr = torchaudio.load(audio_path)
     wav = torchaudio.functional.resample(wav, sr, model.sample_rate)
     wav = wav.mean(dim=0, keepdim=True)
-    if wav.shape[1] < model.sample_rate * duration:
-        return None
-    end_sample = int(model.sample_rate * duration)
-    start_sample = random.randrange(0, max(wav.shape[1] - end_sample, 1))
-    wav = wav[:, start_sample:start_sample+end_sample]
     
+    target_sample_length = int(model.sample_rate * duration)
+    current_sample_length = wav.shape[1]
+    if current_sample_length > target_sample_length:
+        end_sample = target_sample_length
+        start_sample = random.randrange(0, max(current_sample_length - end_sample, 1))
+        wav = wav[:, start_sample:start_sample+end_sample]
+    elif current_sample_length < target_sample_length:
+        pad_amount = target_sample_length - current_sample_length
+        wav = torch.cat([wav, torch.zeros(1, pad_amount)], dim=1)
+        
     assert wav.shape[0] == 1
     wav = wav.cuda()
     wav = wav.unsqueeze(1)
@@ -62,16 +67,21 @@ def preprocess_audio(audio_path, model:CompressionModel, duration:int=30):
     wav, sr = torchaudio.load(audio_path)
     wav = torchaudio.functional.resample(wav, sr, model.sample_rate)
     wav = wav.mean(dim=0, keepdim=True)
-    if wav.shape[1] > model.sample_rate * duration:
-        end_sample = int(model.sample_rate * duration)
-        start_sample = random.randrange(0, max(wav.shape[1] - end_sample, 1))
-        wav = wav[:, start_sample:start_sample+end_sample]
     
+    target_sample_length = int(model.sample_rate * duration)
+    current_sample_length = wav.shape[1]
+    if current_sample_length > target_sample_length:
+        end_sample = target_sample_length
+        start_sample = random.randrange(0, max(current_sample_length - end_sample, 1))
+        wav = wav[:, start_sample:start_sample+end_sample]
+    elif current_sample_length < target_sample_length:
+        pad_amount = target_sample_length - current_sample_length
+        wav = torch.cat([wav, torch.zeros(1, pad_amount)], dim=1)
+        
     assert wav.shape[0] == 1
     
     wav = wav.cuda()
     wav = wav.unsqueeze(1)
-    
     code, scale = model.encode(wav)
     emb = model.decode_latent(code)
 
@@ -84,18 +94,26 @@ def postprocess_audio(embs, model:CompressionModel, scale=None):
     return out
 
 def preprocess_melody(melody_path, model:CompressionModel, duration=30):
-    wav, sr = torchaudio.load(melody_path)
-    wav = torchaudio.functional.resample(wav, sr, model.sample_rate)
-    wav = wav.mean(dim=0, keepdim=True)
-    if wav.shape[1] > model.sample_rate * duration:
-        end_sample = int(model.sample_rate * duration)
-        start_sample = random.randrange(0, max(wav.shape[1] - end_sample, 1))
-        wav = wav[:, start_sample:start_sample+end_sample]
+    melody, sr = torchaudio.load(melody_path)
+    melody = torchaudio.functional.resample(melody, sr, model.sample_rate)
+    melody = melody.mean(dim=0, keepdim=True)
     
-    assert wav.shape[0] == 1
+    target_sample_length = int(model.sample_rate * duration)
+    current_sample_length = melody.shape[1]
+    if current_sample_length > target_sample_length:
+        end_sample = target_sample_length
+        start_sample = random.randrange(0, max(current_sample_length - end_sample, 1))
+        melody = melody[:, start_sample:start_sample+end_sample]
+    elif current_sample_length < target_sample_length:
+        pad_amount = target_sample_length - current_sample_length
+        melody = torch.cat([melody, torch.zeros(1, pad_amount)], dim=1)
+        
+    assert melody.shape[0] == 1
     
-    wav = wav.cuda()
-    wav = wav.unsqueeze(1)
+    melody = melody.cuda()
+    melody = melody.unsqueeze(1)
+    
+    return melody
 
 def extend_dim(x: torch.Tensor, dim: int):
     # e.g. if dim = 4: shape [b] => [b, 1, 1, 1],
