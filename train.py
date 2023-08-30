@@ -39,7 +39,8 @@ def run(*args, **kwargs):
     lm_ckpt = conf["model"]["lm"]["ckpt_loc"]
     
     dataset = AudioDataset(audio_data=audio_dir, text_data=text_dir, melody_data=melody_dir)
-    dataloader = DataLoader(dataset, batch_size=batch_size, num_workers=num_workers, pin_memory=False, drop_last=True)
+    dataloader = DataLoader(dataset, batch_size=batch_size, num_workers=num_workers, 
+                            pin_memory=False, drop_last=True, collate_fn=my_collate)
     
     compression_model = builders.get_compression_model(encodec_conf)
     compression_model.load_state_dict(torch.load(encodec_ckpt)['best_state'])
