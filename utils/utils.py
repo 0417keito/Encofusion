@@ -185,26 +185,22 @@ class AudioDataset(Dataset):
         
         for d in dir_map:
             name, ext = os.path.splitext(d)
-            if ext == "wav":
-                if os.path.exists(os.path.join(text_data, name + ".txt")):
-                    if os.path.exists(os.path.join(melody_data, name, ".wav")):
-                        self.data_map.append(
-                            {
-                                "audio": os.path.join(audio_data, d),
-                                "label": os.path.join(text_data, name, ".txt"),
-                                "melody": os.path.join(melody_data, name, ".wav")
-                            }
-                        ) 
-                    else:
-                        self.data_map.append(
-                            {
-                              "audio": os.path.join(audio_data, d),
-                              "label": os.path.join(text_data, name, ".txt"),  
-                            }
-                        )    
+            if ext == ".wav":
+                text_path = os.path.join(text_data, name + ".txt")
+                melody_path = os.path.join(melody_data, name + ".wav") if melody_data else None
+                
+                if os.path.exists(text_path):
+                    item = {
+                        "audio": os.path.join(audio_data, d),
+                        "label": text_path
+                    }
+                    if melody_data and os.path.exists(melody_path):
+                        item["melody"] = melody_path
+                    self.data_map.append(item)
                                
     def __len__(self):
         return len(self.data_map)
+    
     def __getitem__(self, idx):
         data = self.data_map[idx]
         audio = data["audio"]
