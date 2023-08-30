@@ -105,7 +105,7 @@ def UNetV0(
         modulation_features=modulation_features,
         resnet_groups=resnet_groups,
         resnet_dilation_factor = resnet_dilation_factor,
-        resnet_dilation_rate=resnet_dropout_rate,
+        resnet_dropout_rate=resnet_dropout_rate,
     )
 
 
