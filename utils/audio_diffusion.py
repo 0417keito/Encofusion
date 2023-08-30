@@ -32,7 +32,7 @@ class AudioDiffusion(pl.LightningModule):
         all_texts = []
         all_melody = []
         for inner_audio, cond, melody in batch:
-            emb = preprocess_audio(inner_audio, self.compression_model)
+            emb, _ = preprocess_audio(inner_audio, self.compression_model)
             if inner_audio is None: continue
             if self.use_cfg:
                 embs = torch.cat([emb, emb], dim=0)
