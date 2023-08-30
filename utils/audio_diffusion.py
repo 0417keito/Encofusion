@@ -9,14 +9,15 @@ from audiocraft.models.encodec import CompressionModel
 from audiocraft.models.lm import LMModel
 from audiocraft.modules.conditioners import ClassifierFreeGuidanceDropout
 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
 class AudioDiffusion(pl.LightningModule):
-    def __init__(self, compression_model:CompressionModel, lm:LMModel, use_cfg, diffusion_kwargs, device):
+    def __init__(self, compression_model:CompressionModel, lm:LMModel, use_cfg, diffusion_kwargs):
         super().__init__()
         self.diffusion = DiffusionModel(**diffusion_kwargs)
         self.compression_model = compression_model
         self.lm = lm
         self.use_cfg = use_cfg
-        self.device = device
         self.compression_model.eval()
         self.lm.eval()
         
@@ -48,11 +49,11 @@ class AudioDiffusion(pl.LightningModule):
         if not all_melody:
             attributes, _ = prepare_tokens_and_attributes(compression_model=self.compression_model,
                                                         lm=self.lm, descriptions=all_texts,
-                                                        melody_wavs=None, device=self.device)
+                                                        melody_wavs=None, device=device)
         else:
             attributes, _ = prepare_tokens_and_attributes(compression_model=self.compression_model,
                                                         lm=self.lm, descriptions=all_texts,
-                                                        melody_wavs=all_melody, device=self.device)
+                                                        melody_wavs=all_melody, device=device)
         conds = attributes
         if self.use_cfg:
             null_conds = ClassifierFreeGuidanceDropout(p=1.0)(conds)
@@ -87,11 +88,11 @@ class AudioDiffusion(pl.LightningModule):
             melody = list(context_melody)
             attributes, _ = prepare_tokens_and_attributes(compression_model=self.compression_model,
                                                           lm=self.lm, descriptions=text,
-                                                          melody_wavs=melody, device=self.device)
+                                                          melody_wavs=melody, device=device)
         else:
             attributes, _ = prepare_tokens_and_attributes(compression_model=self.compression_model,
                                                           lm=self.lm, descriptions=text,
-                                                          melody_wavs=None, device=self.device)
+                                                          melody_wavs=None, device=device)
         conds = attributes
             
         if self.use_cfg:
@@ -107,7 +108,7 @@ class AudioDiffusion(pl.LightningModule):
         
         if init is not None:
             start_step = int(init_strength*num_steps)
-            sigmas = self.diffusion.sampler.schedule(num_steps + 1, device='cuda')
+            sigmas = self.diffusion.sampler.schedule(num_steps + 1, device=device)
             sigmas = sigmas[start_step:]
             sigmas = repeat(sigmas, "i -> i b", b=1)
             sigmas_batch = extend_dim(sigmas, dim=noise.ndim + 1)

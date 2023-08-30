@@ -49,7 +49,7 @@ def run(*args, **kwargs):
     lm.load_state_dict(torch.load(lm_ckpt)['best_state'])
     lm.eval()
     diffusion_model = AudioDiffusion(compression_model, lm, diffusion_kwargs=diffusion_conf,
-                                     use_cfg=use_cfg, device=device)
+                                     use_cfg=use_cfg)
     
     if log_to_wandb:
         wandb_logger = pl.loggers.WandbLogger(project=proj_name, log_model='all')
