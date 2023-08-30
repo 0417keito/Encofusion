@@ -186,7 +186,7 @@ class AudioDataset(Dataset):
         for d in dir_map:
             name, ext = os.path.splitext(d)
             if ext == ".wav":
-                text_path = os.path.join(text_data, name + ".txt")
+                text_path = os.path.join(text_data, name + ".json")
                 melody_path = os.path.join(melody_data, name + ".wav") if melody_data else None
                 
                 if os.path.exists(text_path):
