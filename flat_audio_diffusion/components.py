@@ -2,7 +2,7 @@ from typing import Callable, Optional, Sequence
 
 import torch
 import torch.nn.functional as F
-from flat_a_unet import (
+from .flat_a_unet import (
     ClassifierFreeGuidancePlugin,
     Conv,
     Module,
@@ -11,7 +11,7 @@ from flat_a_unet import (
     default,
     exists,
 )
-from flat_a_unet.apex import (
+from .flat_a_unet.apex import (
     AttentionItem,
     CrossAttentionItem,
     InjectChannelsItem,

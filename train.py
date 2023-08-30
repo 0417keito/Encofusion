@@ -4,7 +4,7 @@ import argparse
 import pytorch_lightning as pl
 from omegaconf import OmegaConf
 from torch.utils.data import DataLoader
-from audio_craft.audiocraft.models import builders
+from audiocraft.models import builders
 from utils.audio_diffusion import AudioDiffusion
 from utils.utils import (read_yaml_file, parse_diff_conf, ExceptionCallback, AudioDataset)
 
@@ -120,7 +120,7 @@ def main():
         )
     
     parser.add_argument('--train-data', help='Location of training data, MAKE SURE all files are .wav format and the same sample rate', required=True, metavar='DIR', type=_path_exists)
-    parser.add_argument('--melody-data', helo='Location of melody data, MAKE SURE all files are .wav format and the sampe sample rate', required=False,metavar='DIR', type=_path_exists)
+    parser.add_argument('--melody-data', help='Location of melody data, MAKE SURE all files are .wav format and the sampe sample rate', required=False,metavar='DIR', type=_path_exists)
     parser.add_argument('--text-data', help='Location of text data, MAKE SURE all files are .json format', required=False, metavar='DIR', type=_path_exists)
     parser.add_argument('--ckpt-save-location', help='Location to save network checkpoints', required=True, metavar='FILE', type=_path_exists)
     parser.add_argument('--log-to-wandb', help='T/F whether to log to weights and biases', default=True, metavar='BOOL', type=_str_to_bool)

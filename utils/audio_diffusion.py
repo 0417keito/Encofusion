@@ -5,9 +5,9 @@ from utils.utils import (preprocess_audio, postprocess_audio, prepare_tokens_and
 import torch
 import tqdm
 from einops import repeat
-from audio_craft.audiocraft.models.encodec import CompressionModel
-from audio_craft.audiocraft.models.lm import LMModel
-from audio_craft.audiocraft.modules.conditioners import ClassifierFreeGuidanceDropout
+from audiocraft.models.encodec import CompressionModel
+from audiocraft.models.lm import LMModel
+from audiocraft.modules.conditioners import ClassifierFreeGuidanceDropout
 
 class AudioDiffusion(pl.LightningModule):
     def __init__(self, compression_model:CompressionModel, lm:LMModel, use_cfg, diffusion_kwargs, device):

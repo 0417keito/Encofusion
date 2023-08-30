@@ -1,6 +1,6 @@
 model:
        diffusion:
-              net_t: flat_audio_diffusion_pytorch.UNetV0
+              net_t: flat_audio_diffusion.UNetV0
               in_channels: 128
               channels: [128, 128, 128, 256, 256, 512, 512, 1024, 1024]
               factors: [1, 2, 1, 2, 1, 2, 1, 2, 1]
@@ -9,8 +9,8 @@ model:
               cross_attentions: [0, 1, 0, 1, 0, 1, 0, 1, 1]
               attention_heads: 8
               attention_features: 64
-              diffusion_t: audio_diffusion_pytorch.VDiffusion
-              sampler_t: audio_diffusion_pytorch.VSampler
+              diffusion_t: flat_audio_diffusion.VDiffusion
+              sampler_t: flat_audio_diffusion.VSampler
               embedding_features: 1536
               use_embedding_cfg: True
               # embedding_max_length: context_mult*base_tokens

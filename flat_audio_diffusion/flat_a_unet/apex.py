@@ -3,7 +3,7 @@ from typing import Callable, List, Optional, Sequence, no_type_check
 import torch
 from torch import Tensor, nn
 
-from flat_a_unet import (
+from .blocks import (
     Attention,
     Conv,
     ConvBlock,

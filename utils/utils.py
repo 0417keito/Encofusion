@@ -10,10 +10,10 @@ import torch
 import typing as tp
 from datetime import datetime
 from torch.utils.data import Dataset
-from audio_craft.audiocraft.models.musicgen import MelodyList
-from audio_craft.audiocraft.modules.conditioners import ConditioningAttributes, WavCondition
-from audio_craft.audiocraft.models.encodec import CompressionModel
-from audio_craft.audiocraft.models.lm import LMModel
+from audiocraft.models.musicgen import MelodyList
+from audiocraft.modules.conditioners import ConditioningAttributes, WavCondition
+from audiocraft.models.encodec import CompressionModel
+from audiocraft.models.lm import LMModel
 
 
 def get_obj_from_str(string, reload=False):

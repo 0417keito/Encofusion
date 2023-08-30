@@ -4,7 +4,7 @@ import argparse
 from omegaconf import OmegaConf
 from utils.utils import read_yaml_file, parse_diff_conf, preprocess_audio, get_base_noise, save_audio
 from utils.audio_diffusion import AudioDiffusion
-from audio_craft.audiocraft.models import builders
+from audiocraft.models import builders
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -90,19 +90,11 @@ def _path_exists(p):
       raise argparse.ArgumentTypeError('Input path does not exist.')
   return p
 
-_examples = '''examples:
-
-  # Sample for 30s using all levels with no init audio conditioned on song_a.wav, save results to a directory called results/
-  python sample.py --seconds-length 30 --context-audio song_a.wav --save-dir results --project-name jbdiff_fun --levels 012
-
-  # Sample for length of init audio song_b.wav using song_a.wav as context, use only levels 2 & 1 and use token-multiplier of 4, both of these will speed up generation, also change the dd-noise-style to 'walk'
-  python sample.py --init-audio song_b.wav --init-strength 0.15 --context-audio song_a.wav --save-dir results --project-name jbdiff_fun --levels 12 --dd-noise-style walk --token-multiplier 4
-
-'''
+_examples = '''examples:'''
 
 def main():
     parser = argparse.ArgumentParser(
-        description = 'Sample from JBDiffusion', 
+        description = 'Sample from Encofusion', 
         epilog=_examples, 
         formatter_class=argparse.RawDescriptionHelpFormatter
         )

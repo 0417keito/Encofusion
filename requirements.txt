@@ -21,3 +21,4 @@ torchmetrics
 encodec
 protobuf
 pytorch_lightning
+git+https://github.com/facebookresearch/audiocraft.git
