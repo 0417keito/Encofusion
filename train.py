@@ -70,8 +70,7 @@ def run(*args, **kwargs):
             accelerator="gpu",
             precision=16,
             accumulate_grad_batches=4,
-            callbacks=[ckpt_callback, exc_callback], 
-            logger=wandb_logger,
+            callbacks=[ckpt_callback, exc_callback],
             log_every_n_steps=1,
             max_epochs=10000000,
             )
