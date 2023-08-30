@@ -1,0 +1,24 @@
+model:
+       diffusion:
+              net_t: flat_audio_diffusion_pytorch.UNetV0
+              in_channels: 128
+              channels: [128, 128, 128, 256, 256, 512, 512, 1024, 1024]
+              factors: [1, 2, 1, 2, 1, 2, 1, 2, 1]
+              items: [1, 3, 3, 3, 3, 3, 3, 3, 1]
+              attentions: [0, 0, 0, 0, 1, 0, 1, 0, 0]
+              cross_attentions: [0, 1, 0, 1, 0, 1, 0, 1, 1]
+              attention_heads: 8
+              attention_features: 64
+              diffusion_t: audio_diffusion_pytorch.VDiffusion
+              sampler_t: audio_diffusion_pytorch.VSampler
+              embedding_features: 1536
+              use_embedding_cfg: True
+              # embedding_max_length: context_mult*base_tokens
+              resnet_dilation_factor: 3
+              resnet_dropout_rate: 0.05
+       lm:
+          conf_loc: ./configs/lm/lm_model.yaml
+          ckpt_loc: ./ckpts/lm/musicgen-lm/snapshots/lm/state_dict.bin
+       encodec:
+           conf_loc: ./configs/encodec/encodec_model.yaml
+           ckpt_loc: ./ckpts/encodec/musicgen-encodec/snapshots/encodec/state_dict.bin
