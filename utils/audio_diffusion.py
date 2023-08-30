@@ -48,11 +48,11 @@ class AudioDiffusion(pl.LightningModule):
         
         if not all_melody:
             attributes, _ = prepare_tokens_and_attributes(compression_model=self.compression_model,
-                                                        lm=self.lm, descriptions=all_texts,
+                                                        lm=self.lm, descriptions=all_texts,prompt=None,
                                                         melody_wavs=None, device=device)
         else:
             attributes, _ = prepare_tokens_and_attributes(compression_model=self.compression_model,
-                                                        lm=self.lm, descriptions=all_texts,
+                                                        lm=self.lm, descriptions=all_texts,prompt=None,
                                                         melody_wavs=all_melody, device=device)
         conds = attributes
         if self.use_cfg:
@@ -65,7 +65,7 @@ class AudioDiffusion(pl.LightningModule):
         wav_condition, wav_mask = condition_tensors["self_wav"]
         text_condition, text_mask = condition_tensors["description"]
         
-        conds = torch.cat(wav_condition, text_condition, dim=1)
+        conds = torch.cat([wav_condition, text_condition], dim=1)
         embs = torch.cat(all_embs, dim=0)
         
         loss = self.diffusion(embs, embedding=conds, embedding_mask_proba=0.1)
