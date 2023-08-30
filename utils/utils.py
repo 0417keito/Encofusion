@@ -175,6 +175,12 @@ def prepare_tokens_and_attributes(
             prompt_tokens = None
         return attributes, prompt_tokens
 
+def my_collate(batch):
+    audio = [item[0] for item in batch]
+    label = [item[1] for item in batch]
+    melody = [item[2] for item in batch]
+    return [audio, label, melody]
+
 class AudioDataset(Dataset):
     def __init__(self, audio_data, text_data, melody_data=None):
         self.audio_data = audio_data

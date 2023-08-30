@@ -6,7 +6,7 @@ from omegaconf import OmegaConf
 from torch.utils.data import DataLoader
 from audiocraft.models import builders
 from utils.audio_diffusion import AudioDiffusion
-from utils.utils import (read_yaml_file, parse_diff_conf, ExceptionCallback, AudioDataset)
+from utils.utils import (read_yaml_file, parse_diff_conf, my_collate, ExceptionCallback, AudioDataset)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
