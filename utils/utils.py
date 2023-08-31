@@ -42,7 +42,7 @@ def parse_diff_conf(diff_conf):
     new_conf = {k:(get_obj_from_str(v) if '_t' in k else v) for k,v in diff_conf.items()}
     return new_conf
 
-def load_audio(audio_path, model:CompressionModel, duration:int=30):
+def load_audio(audio_path, model:CompressionModel, duration:int=32):
     wav, sr = torchaudio.load(audio_path)
     wav = torchaudio.functional.resample(wav, sr, model.sample_rate)
     wav = wav.mean(dim=0, keepdim=True)
@@ -63,7 +63,7 @@ def load_audio(audio_path, model:CompressionModel, duration:int=30):
     
     return wav
 
-def preprocess_audio(audio_path, model:CompressionModel, duration:int=30):
+def preprocess_audio(audio_path, model:CompressionModel, duration:int=32):
     wav, sr = torchaudio.load(audio_path)
     wav = torchaudio.functional.resample(wav, sr, model.sample_rate)
     wav = wav.mean(dim=0, keepdim=True)
@@ -93,7 +93,7 @@ def postprocess_audio(embs, model:CompressionModel, scale=None):
     
     return out
 
-def preprocess_melody(melody_path, model:CompressionModel, duration=30):
+def preprocess_melody(melody_path, model:CompressionModel, duration=32):
     melody, sr = torchaudio.load(melody_path)
     melody = torchaudio.functional.resample(melody, sr, model.sample_rate)
     melody = melody.mean(dim=0, keepdim=True)
