@@ -93,7 +93,6 @@ class VDiffusion(Diffusion):
         v_target = alphas * noise - betas * x
         # Predict velocity and return loss
         v_pred = self.net(x_noisy, sigmas, **kwargs)
-        v_pred.permute(0, 3, 1, 2)
         return self.loss_fn(v_pred, v_target)
 
 
